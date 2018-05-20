@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
         expireTime: DataTypes.BIGINT,
         id: {
             type: DataTypes.STRING,
+            allowNull: false,
             primaryKey: true
         },
         buildingType: DataTypes.STRING,
