@@ -1,6 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-    let HouseIDs = sequelize.define('HouseIDs', {
+    let HouseID = sequelize.define('HouseIDs', {
         houseID: {
             type: DataTypes.STRING,
             allowNull: false,
@@ -8,8 +8,8 @@ module.exports = (sequelize, DataTypes) => {
         },
         IndividualUsername: DataTypes.STRING,
     }, {});
-    HouseIDs.associate = function(models) {
+    HouseID.associate = function(models) {
         // associations can be defined here
     };
-    return HouseIDs;
+    return HouseID;
 };

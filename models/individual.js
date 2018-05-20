@@ -1,6 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-    let Individuals = sequelize.define('Individuals', {
+    let Individual = sequelize.define('Individuals', {
         Balance : DataTypes.INTEGER,
         Username: {
             type: DataTypes.STRING,
@@ -13,8 +13,8 @@ module.exports = (sequelize, DataTypes) => {
         phone: DataTypes.STRING,
         isAdmin: DataTypes.BOOLEAN
     }, {});
-    Individuals.associate = function(models) {
-        Individuals.hasMany(models.HouseIDs, { onDelete: 'cascade' });
+    Individual.associate = function(models) {
+        Individual.hasMany(models.HouseIDs, { onDelete: 'cascade' });
     };
-    return Individuals;
+    return Individual;
 };

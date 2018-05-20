@@ -1,6 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-    let RealStates = sequelize.define('RealStates', {
+    let RealState = sequelize.define('RealStates', {
         url: {
             type: DataTypes.STRING,
             allowNull: false,
@@ -9,8 +9,8 @@ module.exports = (sequelize, DataTypes) => {
         Name: DataTypes.STRING,
         isAdmin: DataTypes.BOOLEAN
     }, {});
-    RealStates.associate = function(models) {
+    RealState.associate = function(models) {
         // associations can be defined here
     };
-    return RealStates;
+    return RealState;
 };
