@@ -1,15 +1,14 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
     let Individual = sequelize.define('Individuals', {
-        Balance : DataTypes.INTEGER,
-        Username: {
+        balance : DataTypes.INTEGER,
+        username: {
             type: DataTypes.STRING,
             allowNull: false,
             primaryKey: true
         },
-        Name: DataTypes.STRING,
-        Password: DataTypes.STRING,
-        Phone: DataTypes.STRING,
+        name: DataTypes.STRING,
+        password: DataTypes.STRING,
         phone: DataTypes.STRING,
         isAdmin: DataTypes.BOOLEAN
     }, {});
