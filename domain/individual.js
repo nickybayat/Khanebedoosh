@@ -34,7 +34,7 @@ class Individual extends User {
     }
 
     isPhoneNumBought(id){
-        var boughtHouseIDs = this.getBoughtHouseIDs();
+        let boughtHouseIDs = this.getBoughtHouseIDs();
         let i = 0;
         for (i ; i < boughtHouseIDs.length ; i++) {
             if (boughtHouseIDs[i] === id)

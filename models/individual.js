@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
         isAdmin: DataTypes.BOOLEAN
     }, {});
     Individual.associate = function(models) {
-        Individual.hasMany(models.HouseIDs, { onDelete: 'cascade' });
+        Individual.hasMany(models.HouseID, { onDelete: 'cascade' });
     };
     return Individual;
 };
