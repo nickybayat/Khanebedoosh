@@ -12,3 +12,5 @@ class User {
         return this._isAdmin
     }
 }
+
+module.exports = User;
