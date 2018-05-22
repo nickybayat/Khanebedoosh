@@ -1,5 +1,5 @@
-import User from './user';
-import Bank from './bank';
+const User = require ('./user');
+const Bank = require('./bank');
 const individual = require('../models').individual;
 // import HouseIDs from '../data/HouseIDs';
 
@@ -16,8 +16,16 @@ class Individual extends User {
         let status = await Bank.sendPayRequestAndGetResponse(value);
         if(status){
             this.balance = this.balance + value;
-
-            // Individuals.setBalance(this, balance); // set in DB
+            individual.find({ where: { username: this.username } })
+                .on('success', function (individual) {
+                    // Check if record exists in db
+                    if (individual) {
+                        individual.updateAttributes({
+                            balance: value
+                        })
+                            .then(function () {})
+                    }
+                })
         }
         return status;
     }
@@ -67,4 +75,6 @@ class Individual extends User {
 
 }
 
-module.exports = Individual;
+// module.exports = Individual;
+i = new Individual("بهنام همایون","2222222",0,'behnamhomayoon','password',true);
+i.increaseBalance(1000).then();

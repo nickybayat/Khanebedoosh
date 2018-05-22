@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
     isAdmin: DataTypes.BOOLEAN
   }, {});
   individual.associate = function (models) {
-    individual.hasMany(models.HouseID, { onDelete: 'cascade' });
+    // individual.hasMany(models.HouseID, { onDelete: 'cascade' });
   };
   return individual;
 };

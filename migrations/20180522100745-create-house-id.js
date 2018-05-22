@@ -9,11 +9,11 @@ module.exports = {
       },
       individualUsername: {
         type: Sequelize.STRING,
-        onDelete: 'CASCADE',
-        refrences: {
-          model: 'individuals',
-          key: 'username'
-        }
+        // onDelete: 'CASCADE',
+        // refrences: {
+        //   model: 'individuals',
+        //   key: 'username'
+        // }
       },
       
     });

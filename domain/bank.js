@@ -2,7 +2,6 @@ const fetch = require('node-fetch');
 const url  = 'http://139.59.151.5:6664/bank/pay';
 
 function setStatus(response) {
-    console.log(status);
     if (response.status === 200) {
         return true;
     }
