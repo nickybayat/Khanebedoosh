@@ -127,6 +127,7 @@ fabric.properties
 .idea/sonarlint
 
 package-lock.json
+.idea/codeStyles
 .idea/dbnavigator.xml
 db.khanebedoosh.sqlite
 
