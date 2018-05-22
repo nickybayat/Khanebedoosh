@@ -10,9 +10,6 @@ module.exports = {
       area: {
         type: Sequelize.INTEGER
       },
-      area: {
-        type: Sequelize.INTEGER
-      },
       basePrice: {
         type: Sequelize.INTEGER
       },

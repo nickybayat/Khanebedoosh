@@ -1,5 +1,6 @@
 import User from './user';
 import Bank from './bank';
+const individual = require('../models').individual;
 // import HouseIDs from '../data/HouseIDs';
 
 class Individual extends User {
@@ -15,6 +16,7 @@ class Individual extends User {
         let status = await Bank.sendPayRequestAndGetResponse(value);
         if(status){
             this.balance = this.balance + value;
+
             // Individuals.setBalance(this, balance); // set in DB
         }
         return status;
