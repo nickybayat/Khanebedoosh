@@ -127,6 +127,8 @@ fabric.properties
 .idea/sonarlint
 
 package-lock.json
+.idea/dbnavigator.xml
+db.khanebedoosh.sqlite
 
 
 # End of https://www.gitignore.io/api/node,webstorm
