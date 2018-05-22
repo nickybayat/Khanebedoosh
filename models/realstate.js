@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     name: DataTypes.STRING,
     isAdmin: DataTypes.BOOLEAN
-  }, {});
+  }, {timestamps: false});
   RealState.associate = function (models) {
     // associations can be defined here
   };

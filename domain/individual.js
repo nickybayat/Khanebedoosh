@@ -16,17 +16,19 @@ class Individual extends User {
         let status = await Bank.sendPayRequestAndGetResponse(value);
         if(status){
             this.balance = this.balance + value;
+            let newBalance = this.balance;
+            console.log("balance: "+ newBalance);
             individual.find({ where: { username: this.username } })
-                .on('success', function (individual) {
+                .then(function (individual) {
                     // Check if record exists in db
                     if (individual) {
                         individual.updateAttributes({
-                            balance: value
+                            balance: newBalance
                         })
-                            .then(function () {})
                     }
                 })
         }
+
         return status;
     }
 
@@ -75,6 +77,4 @@ class Individual extends User {
 
 }
 
-// module.exports = Individual;
-i = new Individual("بهنام همایون","2222222",0,'behnamhomayoon','password',true);
-i.increaseBalance(1000).then();
+module.exports = Individual;

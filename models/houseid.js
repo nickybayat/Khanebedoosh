@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true
         },
         individualUsername: DataTypes.STRING,
-    }, {});
+    }, {timestamps: false});
     HouseID.associate = function (models) {
         // associations can be defined here
     };

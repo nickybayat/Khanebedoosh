@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     imageURL: DataTypes.STRING,
     phone: DataTypes.STRING,
     description: DataTypes.STRING
-  }, {});
+  }, {timestamps: false});
   house.associate = function (models) {
     // associations can be defined here
   };

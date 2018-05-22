@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
     password: DataTypes.STRING,
     phone: DataTypes.STRING,
     isAdmin: DataTypes.BOOLEAN
-  }, {});
+  }, {timestamps: false});
   individual.associate = function (models) {
     // individual.hasMany(models.HouseID, { onDelete: 'cascade' });
   };
