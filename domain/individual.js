@@ -84,10 +84,10 @@ class Individual extends User {
 
 }
 
-// module.exports = Individual;
+module.exports = Individual;
 
-i = new Individual("بهنام","0212222",4000,"behnamhomayoon","password",false);
-let promise = i.decreaseBalance();
-promise.then(() =>{
-    console.log(i.balance);
-});
+// i = new Individual("بهنام","0212222",4000,"behnamhomayoon","password",false);
+// let promise = i.decreaseBalance();
+// promise.then(() =>{
+//     console.log(i.balance);
+// });
