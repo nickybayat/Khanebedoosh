@@ -1,7 +1,7 @@
 const User = require ('./user');
 const Bank = require('./bank');
-const individual = require('../models').individual;
-// import HouseIDs from '../data/HouseIDs';
+const IndividualModel = require('../models').individual;
+const HouseID = require('../models').HouseIDs;
 
 class Individual extends User {
     constructor(name, phone, balance, username, password, isAdmin) {
@@ -18,7 +18,7 @@ class Individual extends User {
             this.balance = this.balance + value;
             let newBalance = this.balance;
             // console.log("balance: "+ newBalance);
-            individual.find({ where: { username: this.username } })
+            IndividualModel.find({ where: { username: this.username } })
                 .then(function (individual) {
                     // Check if record exists in db
                     if (individual) {
@@ -35,8 +35,7 @@ class Individual extends User {
     async decreaseBalance() {
         this.balance = this.balance - 1000;
         let newBalance = this.balance;
-        // Individuals.setBalance(this, balance); // set in DB
-        individual.find({where: {username: this.username}})
+        IndividualModel.find({where: {username: this.username}})
             .then(function(individual){
                 individual.updateAttributes({
                     balance: newBalance
@@ -49,7 +48,7 @@ class Individual extends User {
     }
 
     async addBoughtHouseID(id) {
-        // HouseIDs.addHouseID(this.username,id); // add HouseID to DB
+        HouseID.create({houseID:id, individualUsername: this.username}).then();
     }
 
     isPhoneNumBought(id){
@@ -84,10 +83,10 @@ class Individual extends User {
 
 }
 
-module.exports = Individual;
+// module.exports = Individual;
 
-// i = new Individual("بهنام","0212222",4000,"behnamhomayoon","password",false);
-// let promise = i.decreaseBalance();
-// promise.then(() =>{
-//     console.log(i.balance);
-// });
+i = new Individual("بهنام","0212222",4000,"behnamhomayoon","password",false);
+let promise = i.addBoughtHouseID("thisistheid");
+promise.then(() =>{
+    console.log("done");
+});
