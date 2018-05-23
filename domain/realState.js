@@ -52,9 +52,9 @@ class RealState extends User {
 
 module.exports = RealState;
 
-realstate = new RealState("reallllstateeee","http://139.59.151.5:6664/khaneBeDoosh/v2/house",false);
-
-let result = realstate.getHouseByID("78278842-78eb-475f-a38a-a7001f86f644");
-result.then(function(result) {
-    console.log(result) //will log results.
-})
+// realstate = new RealState("reallllstateeee","http://139.59.151.5:6664/khaneBeDoosh/v2/house",false);
+//
+// let result = realstate.getHouseByID("78278842-78eb-475f-a38a-a7001f86f644");
+// result.then(function(result) {
+//     console.log(result) //will log results.
+// })
