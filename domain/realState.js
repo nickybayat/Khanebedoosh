@@ -54,7 +54,7 @@ module.exports = RealState;
 
 // realstate = new RealState("reallllstateeee","http://139.59.151.5:6664/khaneBeDoosh/v2/house",false);
 //
-// let result = realstate.getHouseByID("78278842-78eb-475f-a38a-a7001f86f644");
+// let result = realstate.getHouseByID("2f5807f7-813b-48c5-9f65-4f280e71f97a");
 // result.then(function(result) {
 //     console.log(result) //will log results.
 // })
