@@ -2,6 +2,8 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const bodyParser = require('body-parser');
+const Individual = require('./domain/individual');
+const individual = new Individual("بهنام همایون","021123456",0,'behnamhomayoon','password',false);
 
 const port = process.env.port || 8080;
 let count = 0;
@@ -31,20 +33,21 @@ app.use(function(req, res, next) {
 
 app.use('/public', express.static(__dirname + '/statics'));
 
-app.post('', function(req, res) {
-    const allNames = [{
-        firstName: 'Ali',
-        lastName: 'Alavi',
-    },
-        {
-            firstName: 'Hassan',
-            lastName: 'Hassani',
-        },
-        {
-            firstName: 'Hossein',
-            lastName: 'Hosseini',
-        }];
-    res.render('./allNames', {allNames});
+app.post('/balance', function(req, res) {
+    let value = req.body.balance;
+    try{
+        individual.increaseBalance(parseInt(value)).then(status=>{
+            if (status === true){
+                res.status(200).json({'msg': 'increased balance by '+ value +' successfully!'});
+            }
+            else {
+                res.status(500).json({'msg': 'failed to increase balance by '+ value +'! bank server error!'});
+            }
+        });
+    } catch(error){
+        console.log("Error in increasing balance " + error.message);
+        res.status(400).json({'msg': 'error in increasing balance! try again!'});
+    }
 });
 
 

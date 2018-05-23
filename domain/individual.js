@@ -17,10 +17,8 @@ class Individual extends User {
         if (status) {
             this.balance = this.balance + value;
             let newBalance = this.balance;
-            // console.log("balance: "+ newBalance);
             IndividualModel.find({where: {username: this.username}})
                 .then(function (individual) {
-                    // Check if record exists in db
                     if (individual) {
                         individual.updateAttributes({
                             balance: newBalance
@@ -28,7 +26,6 @@ class Individual extends User {
                     }
                 })
         }
-
         return status;
     }
 
