@@ -17,7 +17,7 @@ class Individual extends User {
         if(status){
             this.balance = this.balance + value;
             let newBalance = this.balance;
-            console.log("balance: "+ newBalance);
+            // console.log("balance: "+ newBalance);
             individual.find({ where: { username: this.username } })
                 .then(function (individual) {
                     // Check if record exists in db
@@ -34,7 +34,14 @@ class Individual extends User {
 
     async decreaseBalance() {
         this.balance = this.balance - 1000;
+        let newBalance = this.balance;
         // Individuals.setBalance(this, balance); // set in DB
+        individual.find({where: {username: this.username}})
+            .then(function(individual){
+                individual.updateAttributes({
+                    balance: newBalance
+                })
+            })
     }
 
     async getBoughtHouseIDs() {
@@ -78,3 +85,9 @@ class Individual extends User {
 }
 
 module.exports = Individual;
+
+// i = new Individual("بهنام","0212222",4000,"behnamhomayoon","password",false);
+// let promise = i.decreaseBalance();
+// promise.then(() =>{
+//     console.log(i.balance);
+// });
