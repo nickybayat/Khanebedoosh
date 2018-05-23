@@ -1,7 +1,7 @@
-const User = require ('./user');
+const User = require('./user');
 const Bank = require('./bank');
-const individual = require('../models').individual;
-// import HouseIDs from '../data/HouseIDs';
+const IndividualModel = require('../models').individual;
+const HouseID = require('../models').HouseIDs;
 
 class Individual extends User {
     constructor(name, phone, balance, username, password, isAdmin) {
@@ -14,11 +14,11 @@ class Individual extends User {
 
     async increaseBalance(value) {
         let status = await Bank.sendPayRequestAndGetResponse(value);
-        if(status){
+        if (status) {
             this.balance = this.balance + value;
             let newBalance = this.balance;
             // console.log("balance: "+ newBalance);
-            individual.find({ where: { username: this.username } })
+            IndividualModel.find({where: {username: this.username}})
                 .then(function (individual) {
                     // Check if record exists in db
                     if (individual) {
@@ -35,9 +35,8 @@ class Individual extends User {
     async decreaseBalance() {
         this.balance = this.balance - 1000;
         let newBalance = this.balance;
-        // Individuals.setBalance(this, balance); // set in DB
-        individual.find({where: {username: this.username}})
-            .then(function(individual){
+        IndividualModel.find({where: {username: this.username}})
+            .then(function (individual) {
                 individual.updateAttributes({
                     balance: newBalance
                 })
@@ -45,17 +44,24 @@ class Individual extends User {
     }
 
     async getBoughtHouseIDs() {
-        // return HouseIDs.getHouseIDs(this.username); // get HouseIDs from DB
+        return HouseID.findAll({where: {individualUsername: this.username}})
+            .then(results => {
+                let houseIDArray = [];
+                results.forEach((row) => {
+                    houseIDArray.push(row.houseID);
+                });
+                return houseIDArray;
+            });
     }
 
     async addBoughtHouseID(id) {
-        // HouseIDs.addHouseID(this.username,id); // add HouseID to DB
+        HouseID.create({houseID: id, individualUsername: this.username}).then();
     }
 
-    isPhoneNumBought(id){
-        let boughtHouseIDs = this.getBoughtHouseIDs();
+    async isPhoneNumBought(id) {
+        let boughtHouseIDs = await this.getBoughtHouseIDs();
         let i = 0;
-        for (i ; i < boughtHouseIDs.length ; i++) {
+        for (i; i < boughtHouseIDs.length; i++) {
             if (boughtHouseIDs[i] === id)
                 return true;
         }
@@ -86,8 +92,8 @@ class Individual extends User {
 
 module.exports = Individual;
 
-// i = new Individual("بهنام","0212222",4000,"behnamhomayoon","password",false);
-// let promise = i.decreaseBalance();
-// promise.then(() =>{
-//     console.log(i.balance);
+// i = new Individual("بهنام", "0212222", 4000, "behnamhomayoon", "password", false);
+// let promise = i.isPhoneNumBought("thisisd");
+// promise.then((res) => {
+//     console.log("res is: " + res);
 // });
