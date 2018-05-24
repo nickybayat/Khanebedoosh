@@ -34,7 +34,7 @@ app.use(function (req, res, next) {
 app.use('/public', express.static(__dirname + '/statics'));
 
 app.get('/', function (req, res) {
-    res.send('Welcome to Khanebedoosh');
+    res.send('Welcome to KhaneBeDoosh');
 });
 
 app.post('/balance', users.balanceAPI);
@@ -55,6 +55,8 @@ app.get('/houses', asyncMiddleware(async (req, res, next) => {
         res.status(400).json({'msg': "Error in finding houses! Try Again! " + error.message});
     }
 }));
+
+app.post('/houses', houses.addHouseAPI);
 
 app.get('/houses/:houseID/phone', houses.phoneAPI);
 
