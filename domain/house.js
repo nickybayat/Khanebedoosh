@@ -1,5 +1,8 @@
 const HouseModel = require('../models').House;
 Sequelize = require('sequelize');
+const debug = require('debug')('http')
+    , http = require('http')
+    , name = 'KhaneBeDoosh';
 
 class House {
     constructor(id, buildingType, address, imageURL, phone,
@@ -80,14 +83,11 @@ class House {
         let d = new Date();
         let sql = "DELETE FROM houses WHERE expireTime BETWEEN 1 AND "+ ((d.getTime() / 1000) - 1);
 
-        let rowCount = 0;
         const s = new Sequelize('sqlite:/Users/nicky/Khanebedoosh-express/db.khanebedoosh.sqlite');
-
         let result = await s.query(sql)
             .catch(function(error) {
                 console.log('request failed in deleting expired houses', error.message);
             })
-        return (rowCount > 0);
     }
 
     get id(){

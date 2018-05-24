@@ -57,17 +57,18 @@ class Search {
 
     async getRequestedHousesFromAllUsers(query){
         let requestedHouses ; // should be a json array
-        this.syncDatabase();
-        requestedHouses = this.getHouseByQuery(query); // bring from DB
+        await this.syncDatabase();
+        debug('database is synced');
+        requestedHouses = await this.getHouseByQuery(query); // bring from DB
         return requestedHouses;
     }
 
     async syncDatabase(){
-        house.removeExpiredHousesIfExist();
-        realstate.addHousesFromRealStateToDB();
+        await house.removeExpiredHousesIfExist();
+        await realstate.addHousesFromRealStateToDB();
     }
 
-    async getHouseByQuery(query){
+    getHouseByQuery(query){
         let sql1 = "SELECT * FROM houses WHERE (id IS NOT NULL)" +
             (query.minArea === null ? "" : " AND (area >= " + query.minArea + ")" ) +
             (query.dealType === null ? "" : " AND (dealType = " + query.dealType + ")" ) +
@@ -81,7 +82,7 @@ class Search {
 
         const s = new Sequelize('sqlite:/Users/nicky/Khanebedoosh-express/db.khanebedoosh.sqlite');
 
-        let result = await s.query(sql1, { model : houseModel})
+        let result = s.query(sql1, { model : houseModel})
             .then(houses => {
 
             })

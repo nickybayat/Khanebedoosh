@@ -89,11 +89,11 @@ class RealState extends User {
 
 }
 
-// module.exports = RealState;
+module.exports = RealState;
 
-realstate = new RealState("reallllstateeee","http://139.59.151.5:6664/khaneBeDoosh/v2/house",false);
-
-let result = realstate.addHousesFromRealStateToDB();
+// realstate = new RealState("reallllstateeee","http://139.59.151.5:6664/khaneBeDoosh/v2/house",false);
+//
+// let result = realstate.addHousesFromRealStateToDB();
 
 // let newHouse = new House(279,95352,8084,0,1,1525617338100,"2d5e0cd4-d6c2-4ac3-9919-faca42046bb2","villa","احتشامیه","https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/German_House.jpg/320px-German_House.jpg",null,null);
 // try {
