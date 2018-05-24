@@ -1,46 +1,50 @@
 const fetch = require('node-fetch');
 const User = require ('./user');
 const RealStateModel = require('../models').RealStates;
+const debug = require('debug')('realState')
+    , name = 'KhaneBeDoosh';
 
 class RealState extends User {
-    constructor(name, url , isAdmin) {
+    constructor(name, url, isAdmin) {
         super(name, isAdmin);
         this._url = url;
-        // add this realstate to DB
     }
-    async getAllHouses(){
+
+    async getAllHouses() {
         let response = await fetch(this.url, {
             method: 'GET',
             headers: {
-                'content_type' : 'application/json',
-                'Accept' : 'application/json',
+                'content_type': 'application/json',
+                'Accept': 'application/json',
             }
         })
             .then(response => {
                 return response.json();
             })
-            .catch(function(error) {
+            .catch(function (error) {
                 console.log('request failed in getting all houses', error);
-            })
+            });
         return response;
     }
 
-    async getHouseByID(id){
+    async getHouseByID(id) {
         let url = this.url + "/" + id;
-        let response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'content_type' : 'application/json',
-                'Accept' : 'application/json',
-            }
-        })
-            .then(response => {
-                return response.json();
-            })
-            .catch(function(error) {
-                console.log('request failed in getting house by id', error);
-            })
-        return response.data;
+        debug(url);
+        try {
+            let response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'content_type': 'application/json',
+                    'Accept': 'application/json',
+                }
+            });
+            const json = await(response.json());
+            debug(JSON.stringify(json));
+            return json.data;
+        }
+        catch (error) {
+            console.log('request failed in getting house by id', error);
+        }
     }
 
     async addHousesFromRealStateToDB(){

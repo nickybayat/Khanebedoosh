@@ -6,3 +6,4 @@ exports.addHouse = async (house) => {
         id: house.id, buildingType: house.buildingType, address: house.address,
         imageURL: house.imageURL, phone: house.phone, description: house.description})
 };
+

@@ -1,5 +1,5 @@
 const asyncMiddleware = require('../utils/asyncMiddleware');
-const individual = require('../domain/manager');
+const individual = require('../domain/manager').individual;
 
 exports.userAPI = asyncMiddleware(async (req, res, next) => {
     let username = req.query.username;
