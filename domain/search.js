@@ -64,11 +64,16 @@ class Search {
     }
 
     async syncDatabase(){
-        await house.removeExpiredHousesIfExist();
-        await realstate.addHousesFromRealStateToDB();
+        try {
+            await h.removeExpiredHousesIfExist();
+            await r.addHousesFromRealStateToDB();
+        }
+        catch(error) {
+            debug(error.message);
+        }
     }
 
-    getHouseByQuery(query){
+    async getHouseByQuery(query){
         let sql1 = "SELECT * FROM houses WHERE (id IS NOT NULL)" +
             (query.minArea === null ? "" : " AND (area >= " + query.minArea + ")" ) +
             (query.dealType === null ? "" : " AND (dealType = " + query.dealType + ")" ) +
@@ -82,14 +87,14 @@ class Search {
 
         const s = new Sequelize('sqlite:/Users/nicky/Khanebedoosh-express/db.khanebedoosh.sqlite');
 
-        let result = s.query(sql1, { model : houseModel})
+        let result = await s.query(sql1)
             .then(houses => {
-
+                return houses;
             })
             .catch(function(error) {
                 console.log('request failed in getting searched houses', error.message);
             })
-        // return result.toJSON();
+        return result;
 
     }
 
@@ -184,4 +189,7 @@ class Search {
     }
 }
 
+
+let h = new house("043b8b68-983b-4fc1-9ef3-342ee5169a92",279,95352,8084,0,1,1525617,"villa","احتشامیه","https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/German_House.jpg/320px-German_House.jpg",null,null);
+let r = new realstate("reallllstateeee","http://139.59.151.5:6664/khaneBeDoosh/v2/house",false);
 module.exports = Search;
