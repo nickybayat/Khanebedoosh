@@ -1,6 +1,7 @@
 const fetch = require('node-fetch');
 const User = require ('./user');
 const house = require('../data/house');
+const houuuuse = require('./house');
 const RealStateModel = require('../models').RealStates;
 const debug = require('debug')('realState')
     , name = 'KhaneBeDoosh';
@@ -54,9 +55,9 @@ class RealState extends User {
             let houseArray = houses.data;
             let expireTime = houses.expireTime;
             for (let i = 0; i < houseArray.length; i++) {
-                let newHouse = houseArray[2];
+                let newHouse = houseArray[i];
                 if (house.doesHouseExist(newHouse.id) === false) {
-                    house.addHouse(newHouse);
+                    await house.addHouse(newHouse);
                 }
             }
         } catch {
@@ -75,6 +76,12 @@ class RealState extends User {
 
 realstate = new RealState("reallllstateeee","http://139.59.151.5:6664/khaneBeDoosh/v2/house",false);
 
-// let result = realstate.addHousesFromRealStateToDB();
+let result = realstate.addHousesFromRealStateToDB();
 
-let result = house.addHouse(279,95352,8084,0,1,1525617338100,"2d5e0cd4-d6c2-4ac3-9919-faca42046bb2","villa","احتشامیه","https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/German_House.jpg/320px-German_House.jpg",null,null);
+// let newHouse = new houuuuse(279,95352,8084,0,1,1525617338100,"2d5e0cd4-d6c2-4ac3-9919-faca42046bb2","villa","احتشامیه","https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/German_House.jpg/320px-German_House.jpg",null,null);
+// try {
+//     house.addHouse(newHouse);
+// }
+// catch (e) {
+//     debug('msg: Illegal Argument in request: ' + e.message);
+// }

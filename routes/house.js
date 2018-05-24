@@ -50,10 +50,6 @@ exports.addHouseAPI = asyncMiddleware(async (req, res, next) => {
         await House.addHouse(house);
         res.status(200).end();
     }
-<<<<<<< HEAD
-    catch(e) {
-        res.status(400).json({'msg': 'Illegal Argument in request: ' + e.message});
-=======
     catch (e) {
         res.status(400).json({'msg': 'Illegal Argument in request: ' + e.message});
     }
@@ -65,6 +61,6 @@ exports.getInfo = asyncMiddleware(async (req, res, next) => {
         res.status(200).json(house);
     } catch (e) {
         res.status(400).json({'msg': 'Error in finding house with given ID: ' + e.message});
->>>>>>> master
     }
 });
+
