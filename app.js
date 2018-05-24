@@ -4,6 +4,7 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const asyncMiddleware = require('./utils/asyncMiddleware');
 const Individual = require('./domain/individual');
+const Search = require('./domain/search');
 const individual = new Individual("بهنام همایون", "021123456", 0, 'behnamhomayoon', 'password', false);
 
 const port = process.env.port || 8080;
@@ -39,6 +40,10 @@ app.use(function (req, res, next) {
 
 app.use('/public', express.static(__dirname + '/statics'));
 
+app.get('/', function (req, res) {
+    res.send('Welcome to Khanebedoosh');
+});
+
 app.post('/balance', asyncMiddleware(async (req, res, next) => {
     let value = req.body.balance;
     try {
@@ -52,6 +57,23 @@ app.post('/balance', asyncMiddleware(async (req, res, next) => {
     } catch (error) {
         console.log("Error in increasing balance " + error.message);
         res.status(400).json({'msg': 'error in increasing balance! try again!'});
+    }
+}));
+
+app.get('/houses', asyncMiddleware(async (req, res, next) => {
+    let minArea = req.query.minArea;
+    let buildingType = req.query.buildingType;
+    let dealType = req.query.dealType;
+    let maxPrice = req.query.maxPrice;
+    try {
+        let searchHouses = new Search(minArea, buildingType, dealType, maxPrice);
+        let requestedHouses = searchHouses.getRequestedHousesFromAllUsers(searchHouses);
+        // requestedHouses must be a json array
+        let result = {'houses': requestedHouses};
+        res.status(200).json(result);
+    }
+    catch {
+        res.status(400).json({'msg': "Error in finding houses! Try Again!"});
     }
 }));
 

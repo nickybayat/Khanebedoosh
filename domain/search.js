@@ -1,4 +1,5 @@
 const houses = require('../models').house;
+const realstate = require('realState')
 
 class Search {
     constructor(minArea,buildingType,dealType,maxPrice){
@@ -13,24 +14,24 @@ class Search {
     validateSearchQuery(minArea, buildingType, dealType, maxPrice){
         try {
             if (minArea !== "") {
-                if (minArea < 0)
+                if (parseInt(minArea) < 0)
                     throw "arguments are wrong!";
                 else
                     this.minArea = minArea;
             }
             if(buildingType !== ""){
                 this.dealType = dealType;
-                if(not(dealType === 0 || dealType === 1)){
+                if(not(parseInt(dealType) === 0 || parseInt(dealType) === 1)){
                     throw "dealType must be either 0 or 1";
                 }
             }
             if(maxPrice !== ""){
-                if(maxPrice < 0){
+                if(parseInt(maxPrice) < 0){
                     throw "price must be positive";
                 }
-                if(dealType === 1)
+                if(parseInt(dealType) === 1)
                     this.maxRentPrice = maxPrice;
-                else if(dealType === 0){
+                else if(parseInt(dealType) === 0){
                     this.maxSellPrice = maxPrice;
                 }
                 else{
@@ -42,6 +43,19 @@ class Search {
         catch(err){
             console.log("arguments are wrong! " + err.message);
         }
+    }
+
+    async getRequestedHousesFromAllUsers(query){
+        let requestedHouses ; // should be a json array
+        // Utility.syncDatabase();
+        requestedHouses = getHouseByQuery(query); // bring from DB
+        return requestedHouses;
+    }
+
+    async findRealStateHouseIDs(query,realstate){
+        let searchResults;
+        let houseJSON = realstate.getAllHouses();
+        
     }
 
     get minArea(){
