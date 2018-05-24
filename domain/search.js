@@ -1,5 +1,6 @@
 const houseModel = require('../models').house;
 const realstate = require('./realState');
+const house = require('./house');
 Sequelize = require('sequelize');
 const debug = require('debug')('http')
     , http = require('http')
@@ -20,7 +21,7 @@ class Search {
             if (minArea !== "") {
                 if (parseInt(minArea) < 0) {
                     debug("problem in minArea");
-                    throw "arguments are wrong!";
+                    throw "area must not be negetive!";
                 }
                 else
                     this.minArea = minArea;
@@ -56,9 +57,14 @@ class Search {
 
     async getRequestedHousesFromAllUsers(query){
         let requestedHouses ; // should be a json array
-        // Utility.syncDatabase();
+        this.syncDatabase();
         requestedHouses = this.getHouseByQuery(query); // bring from DB
         return requestedHouses;
+    }
+
+    async syncDatabase(){
+        house.removeExpiredHousesIfExist();
+        realstate.addHousesFromRealStateToDB();
     }
 
     async getHouseByQuery(query){
@@ -73,11 +79,9 @@ class Search {
                     ? (query.maxRentPrice !== null ? " AND (rentPrice <= " + query.maxRentPrice + ")" : "" )
                     : (query.maxSellPrice !== null ? " AND (sellPrice <= " + query.maxSellPrice + ")" : "" ))) + ";" ;
 
-        const s = new Sequelize({
-            database: '../db.khanebedoosh.sqlite',
-            dialect: 'sqlite'
-        });
-        let result = await s.query(sql1, { type: Sequelize.QueryTypes.SELECT})
+        const s = new Sequelize('sqlite:/Users/nicky/Khanebedoosh-express/db.khanebedoosh.sqlite');
+
+        let result = await s.query(sql1, { model : houseModel})
             .then(houses => {
 
             })

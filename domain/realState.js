@@ -43,6 +43,23 @@ class RealState extends User {
         return response.data;
     }
 
+    async addHousesFromRealStateToDB(){
+        try {
+            let houses = realState.getAllHouses().data;
+            let expireTime = housesJSON.getLong("expireTime");
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject houseJSON = jsonArray.getJSONObject(i);
+                if (!Houses.doesHouseExist(houseJSON.getString("id"))) {
+                    House house = House.createHouseFromJSONAndTimeStamp(houseJSON, expireTime);
+                    Houses.addHouse(house);
+                    Owns.addUserOwnsHouseRelation(house.getId(),null,realState.getUrl());
+                }
+            }
+        } catch (IOException ex) {
+            System.out.println("couldn't get houses from server");
+        }
+    }
+
     get url() {
         return this._url;
     }

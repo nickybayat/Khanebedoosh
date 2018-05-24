@@ -1,4 +1,5 @@
 const HouseModel = require('../models').House;
+Sequelize = require('sequelize');
 
 class House {
     constructor(id, buildingType, address, imageURL, phone,
@@ -75,6 +76,20 @@ class House {
         return null;
     }
 
+    async removeExpiredHousesIfExist(){
+        let d = new Date();
+        let sql = "DELETE FROM houses WHERE expireTime BETWEEN 1 AND "+ ((d.getTime() / 1000) - 1);
+
+        let rowCount = 0;
+        const s = new Sequelize('sqlite:/Users/nicky/Khanebedoosh-express/db.khanebedoosh.sqlite');
+
+        let result = await s.query(sql)
+            .catch(function(error) {
+                console.log('request failed in deleting expired houses', error.message);
+            })
+        return (rowCount > 0);
+    }
+
     get id(){
         return this._id;
     }
@@ -115,3 +130,8 @@ class House {
 
 
 module.exports = House;
+
+
+// let house = new House("043b8b68-983b-4fc1-9ef3-342ee5169a92",279,95352,8084,0,1,1525617,"villa","احتشامیه","https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/German_House.jpg/320px-German_House.jpg",null,null);
+//
+// let result = house.removeExpiredHousesIfExist();
