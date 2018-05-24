@@ -15,7 +15,7 @@ exports.createHouseFromRequest = async (req) => {
         let phone = req.body.phone;
         let area = parseInt(req.body.area);
 
-        if (!dealType.isNaN && buildingType !== undefined && price.isNaN &&
+        if (!dealType.isNaN && buildingType !== undefined && !price.isNaN &&
             address !== undefined && description !== undefined && !area.isNaN && phone !== undefined) {
             if (buildingType === "" || address === "" || description === "" || phone ==="")
                 throw Error('empty parameters in your query');
