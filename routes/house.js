@@ -41,7 +41,16 @@ exports.addHouseAPI = asyncMiddleware(async (req, res, next) => {
 exports.getInfo = asyncMiddleware(async (req, res, next) => {
     try {
         let house = await realState.getHouseByID(req.params.houseID);
-        res.status(200).json(house);
+        if (house === undefined) {
+            house = await House.getHouse(req.params.houseID);
+        }
+        let resHouse = {
+            id: house.id, buildingType: house.buildingType, address: house.address,
+            imageURL: house.imageURL, phone: house.phone, expireTime: house.expireTime, area: house.area,
+            basePrice: house.basePrice, rentPrice: house.rentPrice, sellPrice: house.sellPrice,
+            dealType: house.dealType
+        };
+        res.status(200).json({'house': resHouse});
     } catch (e) {
         res.status(400).json({'msg': 'Error in finding house with given ID: ' + e.message});
     }

@@ -1,9 +1,23 @@
-const House = require('../models').house;
+const HouseModel = require('../models').house;
+const House = require('../domain/house');
+const debug = require('debug')('dataHouse')
+    , name = 'KhaneBeDoosh';
 
 exports.addHouse = async (house) => {
-    await House.create({area: house.area, basePrice: house.basePrice, rentPrice: house.rentPrice,
+    await HouseModel.create({
+        area: house.area, basePrice: house.basePrice, rentPrice: house.rentPrice,
         sellPrice: house.sellPrice, dealType: house.dealType, expireTime: house.expireTime,
         id: house.id, buildingType: house.buildingType, address: house.address,
-        imageURL: house.imageURL, phone: house.phone, description: house.description})
+        imageURL: house.imageURL, phone: house.phone, description: house.description
+    })
 };
 
+exports.getHouse = async (id) => {
+    let result = await HouseModel.find({where: {id: id}});
+    debug(JSON.stringify(result));
+    if (result != null)
+        return new House(result.id, result.buildingType, result.address, result.imageURL, result.phone,
+            result.description, result.expireTime, result.area, result.basePrice, result.rentPrice, result.sellPrice,
+            result.dealType);
+    else return null;
+};
