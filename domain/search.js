@@ -54,8 +54,61 @@ class Search {
 
     async findRealStateHouseIDs(query,realstate){
         let searchResults;
-        let houseJSON = realstate.getAllHouses();
+        let houseJSON = realstate.getAllHouses().data;
+        for (let i = 0; i < houseJSON.length; i++) {
+            let house = houseJSON[i];
+            if (query.evaluateHouse(house)) {
+                searchResults.add(house.id);
+            }
+        }
+        return searchResults;
         
+    }
+
+    evaluateHouse(house){
+        let isAreaOK = isAreaOK(house);
+        let isDealTypeOK = isDealTypeOK(house);
+        let isBuildingTypeOK = isBuildingTypeOK(house);
+        let isPriceOK = isPriceOK(house, isDealTypeOK);
+        return (isAreaOK && isBuildingTypeOK && isDealTypeOK && isPriceOK);
+    }
+
+    isPriceOK(house,isDealTypeOK){
+        if (this.dealType !== null && isDealTypeOK) {
+            if (parseInt(this.dealType) === 1)
+                if ((this.maxRentPrice !== null && parseInt(house.rentPrice) <= parseInt(this.maxRentPrice))
+                    || this.maxRentPrice === null)
+                    return true;
+            if (parseInt(this.dealType) === 0)
+                if ((this.maxSellPrice !== null && parseInt(house.sellPrice) <= parseInt(this.maxSellPrice))
+                    || this.maxSellPrice === null)
+                    return true;
+        }
+        if (this.dealType === null) {
+            if ((this.maxRentPrice !== null && parseInt(house.dealType) === 1 &&
+                    parseInt(house.rentPrice) <= parseInt(this.maxRentPrice)) ||
+                this.maxRentPrice === null)
+                return true;
+            if ((this.maxSellPrice !== null && parseInt(house.dealType) === 0 &&
+                    parseInt(house.sellPrice) <= parseInt(this.maxSellPrice)) ||
+                this.maxSellPrice === null)
+                return true;
+        }
+        return false;
+    }
+
+    isBuildingTypeOK(house){
+        return (this.buildingType === null ||
+            (this.buildingType === house.buildingType));
+    }
+
+    isDealTypeOK(house){
+        return ((this.dealType !== null && house.dealType === this.dealType) ||
+            this.dealType === null);
+    }
+
+    isAreaOK(house){
+        return ((this.minArea !== null && (parseInt(house.area) >= this.minArea)) || this.minArea === null);
     }
 
     get minArea(){
