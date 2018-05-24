@@ -51,6 +51,8 @@ app.get('/houses', asyncMiddleware(async (req, res, next) => {
 
 app.post('/houses', houses.addHouseAPI);
 
+app.get('/houses/:houseID', houses.getInfo);
+
 app.get('/houses/:houseID/phone', houses.phoneAPI);
 
 app.get('/users', users.userAPI);

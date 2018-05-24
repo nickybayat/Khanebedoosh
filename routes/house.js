@@ -1,5 +1,5 @@
 const asyncMiddleware = require('../utils/asyncMiddleware');
-const individual = require('../domain/manager');
+const individual = require('../domain/manager').individual;
 const houses = require('../utils/house');
 const House = require('../data/house');
 const debug = require('debug')('http')
@@ -32,7 +32,15 @@ exports.addHouseAPI = asyncMiddleware(async (req, res, next) => {
         await House.addHouse(house);
         res.status(200).end();
     }
-    catch(e){
-        res.status(400).json({'msg':'Illegal Argument in request: ' + e.message});
+    catch (e) {
+        res.status(400).json({'msg': 'Illegal Argument in request: ' + e.message});
+    }
+});
+
+exports.getInfo = asyncMiddleware(async (req, res, next) => {
+    try {
+
+    } catch (e) {
+        res.status(400).json({'msg': 'Error in finding house with given ID: ' + e.message});
     }
 });

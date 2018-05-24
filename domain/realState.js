@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
 const User = require ('./user');
-const RealState = require('../models').RealStates;
+const RealStateModel = require('../models').RealStates;
 
 class RealState extends User {
     constructor(name, url , isAdmin) {
@@ -33,13 +33,12 @@ class RealState extends User {
                 'content_type' : 'application/json',
                 'Accept' : 'application/json',
             }
-        })
-            .then(response => {
+        }).then(response => {
                 return response.json();
             })
             .catch(function(error) {
                 console.log('request failed in getting house by id', error);
-            })
+            });
         return response.data;
     }
 
