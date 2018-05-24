@@ -52,7 +52,7 @@ class Individual extends User {
     }
 
     async addBoughtHouseID(id) {
-        HouseID.create({houseID: id, individualUsername: this.username}).then();
+        await HouseID.create({houseID: id, individualUsername: this.username});
     }
 
     async isPhoneNumBought(id) {
