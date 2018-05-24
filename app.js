@@ -6,14 +6,7 @@ const asyncMiddleware = require('./utils/asyncMiddleware');
 const Search = require('./domain/search');
 const users = require('./routes/user');
 const houses = require('./routes/house');
-const individual = require('./domain/manager');
 const port = process.env.port || 8080;
-const debug = require('debug')('http')
-    , http = require('http')
-    , name = 'KhaneBeDoosh';
-
-
-let count = 0;
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
