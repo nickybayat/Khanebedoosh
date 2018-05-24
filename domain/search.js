@@ -92,7 +92,6 @@ class Search {
             }
         }
         return searchResults;
-        
     }
 
     evaluateHouse(house){
