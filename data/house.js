@@ -3,8 +3,8 @@ const House = require('../domain/house');
 const debug = require('debug')('dataHouse')
     , name = 'KhaneBeDoosh';
 
-exports.addHouse = async (house) => {
-    await HouseModel.create({
+exports.addHouse = (house) => {
+    HouseModel.create({
         area: house.area, basePrice: house.basePrice, rentPrice: house.rentPrice,
         sellPrice: house.sellPrice, dealType: house.dealType, expireTime: house.expireTime,
         id: house.id, buildingType: house.buildingType, address: house.address,
@@ -13,7 +13,7 @@ exports.addHouse = async (house) => {
 };
 
 exports.doesHouseExist = (id) => {
-    let result = House.find({where: {id: id}})
+    let result = HouseModel.find({where: {id: id}})
         .then(function (house) {
             if (house)
                 return true;

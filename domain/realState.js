@@ -1,7 +1,6 @@
 const fetch = require('node-fetch');
 const User = require ('./user');
 const houseData = require('../data/house');
-const User = require('./user');
 const House = require('../domain/house');
 const RealStateModel = require('../models').RealStates;
 const debug = require('debug')('realState')
@@ -74,7 +73,7 @@ class RealState extends User {
             let expireTime = houses.expireTime;
             for (let i = 0; i < houseArray.length; i++) {
                 let newHouse = houseArray[i];
-                if (houseData.doesHouseExist(newHouse.id) === false) {
+                if (await houseData.doesHouseExist(newHouse.id) === false) {
                     await houseData.addHouse(newHouse);
                 }
             }
