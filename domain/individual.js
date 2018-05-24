@@ -2,6 +2,9 @@ const User = require('./user');
 const Bank = require('./bank');
 const IndividualModel = require('../models').individual;
 const HouseID = require('../models').HouseIDs;
+const debug = require('debug')('http')
+    , http = require('http')
+    , name = 'KhaneBeDoosh';
 
 class Individual extends User {
     constructor(name, phone, balance, username, password, isAdmin) {
@@ -59,8 +62,11 @@ class Individual extends User {
         let boughtHouseIDs = await this.getBoughtHouseIDs();
         let i = 0;
         for (i; i < boughtHouseIDs.length; i++) {
-            if (boughtHouseIDs[i] === id)
+            debug('id ' + boughtHouseIDs[i] + ' is being checked');
+            if (boughtHouseIDs[i] === id) {
+                debug(id + ' is equal to ' + boughtHouseIDs [i]);
                 return true;
+            }
         }
         return false;
     }

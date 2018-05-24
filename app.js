@@ -4,10 +4,13 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const asyncMiddleware = require('./utils/asyncMiddleware');
 const Individual = require('./domain/individual');
-
 const individual = new Individual("بهنام همایون", "021123456", 0, 'behnamhomayoon', 'password', false);
 
 const port = process.env.port || 8080;
+const debug = require('debug')('http')
+    , http = require('http')
+    , name = 'KhaneBeDoosh';
+
 
 let count = 0;
 
@@ -52,16 +55,29 @@ app.post('/balance', asyncMiddleware(async (req, res, next) => {
     }
 }));
 
-// app.get('/houses/:houseID/phone', function (req, res) {
-//     if (individual.balance >= 1000 && !individual.isPhoneNumBought(req.params.houseID)) {
-//         individual.addBoughtHouseID(req.params.houseID);
-//
-//     }
-// });
+app.get('/houses/:houseID/phone', asyncMiddleware (async (req, res, next) => {
+    debug('purchasing phone number for id ' + req.params.houseID + '... current balance is ' + individual.balance);
+    let isBought = await individual.isPhoneNumBought(req.params.houseID);
+    debug('value is ' + isBought);
+    if (individual.balance >= 1000 && !isBought) {
+        debug('balance is more than 1000');
+        await individual.addBoughtHouseID(req.params.houseID);
+        await individual.decreaseBalance();
+        res.status(200).json({'purchaseSuccessStatus':'true'});
+    }
+    else if(individual.balance < 1000 && !isBought){
+        res.status(200).json({'purchaseSuccessStatus':'false'});
+    }
+    else if(isBought){
+        res.status(200).json({'purchaseSuccessStatus':'true'});
+        debug('phone number is already bought');
+    }
+    else throw Error('failed to purchase phone number!');
+}));
 
-app.use(function(err, req, res, next) {
-    console.error(err);
-    res.status(500).json({message: 'an error occurred!'})
+app.use(function(error, req, res, next) {
+    console.error(error);
+    res.status(400).json({'msg': 'an error occurred! '+ error.message})
 });
 
 
