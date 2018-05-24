@@ -56,10 +56,6 @@ class House {
         else if(house.buildingType === "آپارتمان")
             buildingType = "apartment";
 
-        return new House(house.id,buildingType,house.address,house.imageURL,
-            house.phone,house.description,null,house.area,basePrice,
-            rentPrice,sellPrice,house.dealType);
-
         return new House(house.id,buildingType,house.address,house.imageURL,null,null,expireTime,
             house.area,basePrice,rentPrice,sellPrice,house.dealType);
     }

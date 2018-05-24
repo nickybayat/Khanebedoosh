@@ -3,10 +3,10 @@ const app = express();
 const path = require('path');
 const bodyParser = require('body-parser');
 const asyncMiddleware = require('./utils/asyncMiddleware');
-const Individual = require('./domain/individual');
 const Search = require('./domain/search');
-const individual = new Individual("بهنام همایون", "021123456", 0, 'behnamhomayoon', 'password', false);
-
+const users = require('./routes/user');
+const houses = require('./routes/house');
+const individual = require('./domain/manager');
 const port = process.env.port || 8080;
 const debug = require('debug')('http')
     , http = require('http')
@@ -31,34 +31,13 @@ app.use(function (req, res, next) {
     next();
 });
 
-// app.use('/name', function(req, res, next) {
-//     //Surely it's not a good way to count api calls like this. It's just to show how middleware works.
-//     count++;
-//     console.log('url ' + req.originalUrl + ' called ' + count + ' times');
-//     next();
-// });
-
 app.use('/public', express.static(__dirname + '/statics'));
 
 app.get('/', function (req, res) {
     res.send('Welcome to Khanebedoosh');
 });
 
-app.post('/balance', asyncMiddleware(async (req, res, next) => {
-    let value = req.body.balance;
-    try {
-        let status = await individual.increaseBalance(parseInt(value));
-        if (status === true) {
-            res.status(200).json({'msg': 'increased balance by ' + value + ' successfully!'});
-        }
-        else {
-            res.status(500).json({'msg': 'failed to increase balance by ' + value + '! bank server error!'});
-        }
-    } catch (error) {
-        console.log("Error in increasing balance " + error.message);
-        res.status(400).json({'msg': 'error in increasing balance! try again!'});
-    }
-}));
+app.post('/balance', users.balanceAPI);
 
 app.get('/houses', asyncMiddleware(async (req, res, next) => {
     let minArea = req.query.minArea;
@@ -72,42 +51,14 @@ app.get('/houses', asyncMiddleware(async (req, res, next) => {
         let result = {'houses': requestedHouses};
         res.status(200).json(result);
     }
-    catch {
-        res.status(400).json({'msg': "Error in finding houses! Try Again!"});
+    catch (error) {
+        res.status(400).json({'msg': "Error in finding houses! Try Again! " + error.message});
     }
 }));
 
-app.get('/houses/:houseID/phone', asyncMiddleware(async (req, res, next) => {
-    debug('purchasing phone number for id ' + req.params.houseID + '... current balance is ' + individual.balance);
-    let isBought = await individual.isPhoneNumBought(req.params.houseID);
-    debug('value is ' + isBought);
-    if (individual.balance >= 1000 && !isBought) {
-        debug('balance is more than 1000');
-        await individual.addBoughtHouseID(req.params.houseID);
-        await individual.decreaseBalance();
-        res.status(200).json({'purchaseSuccessStatus': 'true'});
-    }
-    else if (individual.balance < 1000 && !isBought) {
-        res.status(200).json({'purchaseSuccessStatus': 'false'});
-    }
-    else if (isBought) {
-        res.status(200).json({'purchaseSuccessStatus': 'true'});
-        debug('phone number is already bought');
-    }
-    else throw Error('failed to purchase phone number!');
-}));
+app.get('/houses/:houseID/phone', houses.phoneAPI);
 
-app.get('/users', asyncMiddleware(async (req, res, next) => {
-    let username = req.query.username;
-    let houseID = req.query.houseID;
-    if (username !== undefined) {
-        let result = {'individual': individual.toJSON()};
-        if (houseID !== undefined) {
-            result['hasPayed'] = await individual.isPhoneNumBought(houseID);
-        }
-        res.status(200).json(result);
-    } else throw Error('No username provided');
-}));
+app.get('/users', users.userAPI);
 
 app.use(function (error, req, res, next) {
     console.error(error);
