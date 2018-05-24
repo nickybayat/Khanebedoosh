@@ -55,7 +55,7 @@ app.post('/balance', asyncMiddleware(async (req, res, next) => {
     }
 }));
 
-app.get('/houses/:houseID/phone', asyncMiddleware (async (req, res, next) => {
+app.get('/houses/:houseID/phone', asyncMiddleware(async (req, res, next) => {
     debug('purchasing phone number for id ' + req.params.houseID + '... current balance is ' + individual.balance);
     let isBought = await individual.isPhoneNumBought(req.params.houseID);
     debug('value is ' + isBought);
@@ -63,23 +63,34 @@ app.get('/houses/:houseID/phone', asyncMiddleware (async (req, res, next) => {
         debug('balance is more than 1000');
         await individual.addBoughtHouseID(req.params.houseID);
         await individual.decreaseBalance();
-        res.status(200).json({'purchaseSuccessStatus':'true'});
+        res.status(200).json({'purchaseSuccessStatus': 'true'});
     }
-    else if(individual.balance < 1000 && !isBought){
-        res.status(200).json({'purchaseSuccessStatus':'false'});
+    else if (individual.balance < 1000 && !isBought) {
+        res.status(200).json({'purchaseSuccessStatus': 'false'});
     }
-    else if(isBought){
-        res.status(200).json({'purchaseSuccessStatus':'true'});
+    else if (isBought) {
+        res.status(200).json({'purchaseSuccessStatus': 'true'});
         debug('phone number is already bought');
     }
     else throw Error('failed to purchase phone number!');
 }));
 
-app.use(function(error, req, res, next) {
-    console.error(error);
-    res.status(400).json({'msg': 'an error occurred! '+ error.message})
-});
+app.get('/users', asyncMiddleware(async (req, res, next) => {
+    let username = req.query.username;
+    let houseID = req.query.houseID;
+    if (username !== undefined) {
+        let result = {'individual': individual.toJSON()};
+        if (houseID !== undefined) {
+            result['hasPayed'] = await individual.isPhoneNumBought(houseID);
+        }
+        res.status(200).json(result);
+    } else throw Error('No username provided');
+}));
 
+app.use(function (error, req, res, next) {
+    console.error(error);
+    res.status(400).json({'msg': 'an error occurred! ' + error.message})
+});
 
 app.listen(port);
 console.log('Listening on port: ' + port);

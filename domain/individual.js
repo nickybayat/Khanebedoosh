@@ -71,6 +71,13 @@ class Individual extends User {
         return false;
     }
 
+    toJSON(){
+        return {
+          'name': this.name,
+          'balance': this.balance
+        };
+    }
+
     get username() {
         return this._username;
     }
