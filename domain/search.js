@@ -1,10 +1,9 @@
 const houseModel = require('../models').house;
 const realstate = require('./realState');
-
-var a = require('debug')('search:a')
-    ,b = require('debug')('search:b')
-    ,c = require('debug')('search:c')
-    ,d = require('debug')('search:d');
+Sequelize = require('sequelize');
+const debug = require('debug')('http')
+    , http = require('http')
+    , name = 'KhaneBeDoosh';
 
 class Search {
     constructor(minArea,buildingType,dealType,maxPrice){
@@ -13,14 +12,14 @@ class Search {
         this._dealType = null;
         this._maxRentPrice = null;
         this._maxSellPrice = null;
-        validateSearchQuery(minArea, buildingType, dealType, maxPrice);
+        this.validateSearchQuery(minArea, buildingType, dealType, maxPrice);
     }
 
     validateSearchQuery(minArea, buildingType, dealType, maxPrice){
         try {
             if (minArea !== "") {
                 if (parseInt(minArea) < 0) {
-                    a("problem in minArea");
+                    debug("problem in minArea");
                     throw "arguments are wrong!";
                 }
                 else
@@ -29,13 +28,13 @@ class Search {
             if(buildingType !== ""){
                 this.dealType = dealType;
                 if(not(parseInt(dealType) === 0 || parseInt(dealType) === 1)){
-                    b('problem with dealType');
+                    debug('problem with dealType');
                     throw "dealType must be either 0 or 1";
                 }
             }
             if(maxPrice !== ""){
                 if(parseInt(maxPrice) < 0){
-                    c('problem with maxPrice');
+                    debug('problem with maxPrice');
                     throw "price must be positive";
                 }
                 if(parseInt(dealType) === 1)
@@ -50,7 +49,7 @@ class Search {
             }
         }
         catch(err){
-            d('here in catch');
+            debug('here in catch');
             console.log("arguments are wrong! " + err.message);
         }
     }
@@ -58,12 +57,12 @@ class Search {
     async getRequestedHousesFromAllUsers(query){
         let requestedHouses ; // should be a json array
         // Utility.syncDatabase();
-        requestedHouses = getHouseByQuery(query); // bring from DB
+        requestedHouses = this.getHouseByQuery(query); // bring from DB
         return requestedHouses;
     }
 
     async getHouseByQuery(query){
-        let sql1 = "SELECT * FROM Houses WHERE (id IS NOT NULL)" +
+        let sql1 = "SELECT * FROM houses WHERE (id IS NOT NULL)" +
             (query.minArea === null ? "" : " AND (area >= " + query.minArea + ")" ) +
             (query.dealType === null ? "" : " AND (dealType = " + query.dealType + ")" ) +
             (query.buildingType === null ? "" : " AND (buildingType LIKE '" + query.buildingType + "')" ) +
@@ -74,11 +73,18 @@ class Search {
                     ? (query.maxRentPrice !== null ? " AND (rentPrice <= " + query.maxRentPrice + ")" : "" )
                     : (query.maxSellPrice !== null ? " AND (sellPrice <= " + query.maxSellPrice + ")" : "" ))) + ";" ;
 
-
-        houseModel.query(sql1, { type: sequelize.QueryTypes.SELECT})
-            .then(users => {
+        const s = new Sequelize({
+            database: '../db.khanebedoosh.sqlite',
+            dialect: 'sqlite'
+        });
+        let result = await s.query(sql1, { type: Sequelize.QueryTypes.SELECT})
+            .then(houses => {
 
             })
+            .catch(function(error) {
+                console.log('request failed in getting searched houses', error.message);
+            })
+        // return result.toJSON();
 
     }
 
