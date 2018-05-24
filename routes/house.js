@@ -36,7 +36,7 @@ exports.searchAPI = asyncMiddleware(async (req, res, next) => {
     try {
         let searchHouses = new Search(minArea, buildingType, dealType, maxPrice);
         let requestedHouses = await searchHouses.getRequestedHousesFromAllUsers(searchHouses);
-        let result = {'houses': requestedHouses};
+        let result = {'houses': requestedHouses[0]};
         res.status(200).send(JSON.stringify(result));
     }
     catch (error) {
