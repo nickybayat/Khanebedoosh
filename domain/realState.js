@@ -1,5 +1,6 @@
 const fetch = require('node-fetch');
 const User = require ('./user');
+const house = require('../data/house');
 const RealStateModel = require('../models').RealStates;
 const debug = require('debug')('realState')
     , name = 'KhaneBeDoosh';
@@ -49,18 +50,17 @@ class RealState extends User {
 
     async addHousesFromRealStateToDB(){
         try {
-            let houses = realState.getAllHouses().data;
-            let expireTime = housesJSON.getLong("expireTime");
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject houseJSON = jsonArray.getJSONObject(i);
-                if (!Houses.doesHouseExist(houseJSON.getString("id"))) {
-                    House house = House.createHouseFromJSONAndTimeStamp(houseJSON, expireTime);
-                    Houses.addHouse(house);
-                    Owns.addUserOwnsHouseRelation(house.getId(),null,realState.getUrl());
+            let houses = await this.getAllHouses();
+            let houseArray = houses.data;
+            let expireTime = houses.expireTime;
+            for (let i = 0; i < houseArray.length; i++) {
+                let newHouse = houseArray[2];
+                if (house.doesHouseExist(newHouse.id) === false) {
+                    house.addHouse(newHouse);
                 }
             }
-        } catch (IOException ex) {
-            System.out.println("couldn't get houses from server");
+        } catch {
+            debug("problem in addHousesFromRealStateToDB");
         }
     }
 
@@ -71,11 +71,10 @@ class RealState extends User {
 
 }
 
-module.exports = RealState;
+// module.exports = RealState;
 
-// realstate = new RealState("reallllstateeee","http://139.59.151.5:6664/khaneBeDoosh/v2/house",false);
-//
-// let result = realstate.getHouseByID("2f5807f7-813b-48c5-9f65-4f280e71f97a");
-// result.then(function(result) {
-//     console.log(result) //will log results.
-// })
+realstate = new RealState("reallllstateeee","http://139.59.151.5:6664/khaneBeDoosh/v2/house",false);
+
+// let result = realstate.addHousesFromRealStateToDB();
+
+let result = house.addHouse(279,95352,8084,0,1,1525617338100,"2d5e0cd4-d6c2-4ac3-9919-faca42046bb2","villa","احتشامیه","https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/German_House.jpg/320px-German_House.jpg",null,null);
