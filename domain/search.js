@@ -1,4 +1,4 @@
-const houses = require('../models').house;
+const houseModel = require('../models').house;
 const realstate = require('realState')
 
 class Search {
@@ -50,6 +50,26 @@ class Search {
         // Utility.syncDatabase();
         requestedHouses = getHouseByQuery(query); // bring from DB
         return requestedHouses;
+    }
+
+    async getHouseByQuery(query){
+        let sql1 = "SELECT * FROM Houses WHERE (id IS NOT NULL)" +
+            (query.minArea === null ? "" : " AND (area >= " + query.minArea + ")" ) +
+            (query.dealType === null ? "" : " AND (dealType = " + query.dealType + ")" ) +
+            (query.buildingType === null ? "" : " AND (buildingType LIKE '" + query.buildingType + "')" ) +
+            (query.dealType === null
+                ? ((query.maxRentPrice !== null ) ? " AND ((rentPrice <= " + query.maxRentPrice + ") OR rentPrice = NULL)" :
+                    (query.maxSellPrice !== null ) ? " AND ((sellPrice <= " + query.maxSellPrice + ") OR sellPrice = NULL)" : "")
+                : (parseInt(query.dealType) === 1
+                    ? (query.maxRentPrice !== null ? " AND (rentPrice <= " + query.maxRentPrice + ")" : "" )
+                    : (query.maxSellPrice !== null ? " AND (sellPrice <= " + query.maxSellPrice + ")" : "" ))) + ";" ;
+
+
+        houseModel.query(sql1, { type: sequelize.QueryTypes.SELECT})
+            .then(users => {
+
+            })
+
     }
 
     async findRealStateHouseIDs(query,realstate){
