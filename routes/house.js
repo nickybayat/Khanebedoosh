@@ -1,5 +1,6 @@
 const asyncMiddleware = require('../utils/asyncMiddleware');
 const individual = require('../domain/manager').individual;
+const realState = require('../domain/manager').realstate;
 const houses = require('../utils/house');
 const House = require('../data/house');
 const debug = require('debug')('http')
@@ -39,7 +40,8 @@ exports.addHouseAPI = asyncMiddleware(async (req, res, next) => {
 
 exports.getInfo = asyncMiddleware(async (req, res, next) => {
     try {
-
+        let house = await realState.getHouseByID(req.params.houseID);
+        res.status(200).json(house);
     } catch (e) {
         res.status(400).json({'msg': 'Error in finding house with given ID: ' + e.message});
     }
