@@ -40,7 +40,7 @@ exports.searchAPI = asyncMiddleware(async (req, res, next) => {
         res.status(200).send(JSON.stringify(result));
     }
     catch (error) {
-        res.status(400).json({'msg': "Error in finding houses! Try Again! " + error.message});
+        res.status(400).json({'msg': "Error in find houses! Try Again! " + error.message});
     }
 });
 
