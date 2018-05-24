@@ -67,10 +67,10 @@ app.get('/houses', asyncMiddleware(async (req, res, next) => {
     let maxPrice = req.query.maxPrice;
     try {
         let searchHouses = new Search(minArea, buildingType, dealType, maxPrice);
+        debug('search constructor worked!');
         let requestedHouses = searchHouses.getRequestedHousesFromAllUsers(searchHouses);
-        // requestedHouses must be a json array
         let result = {'houses': requestedHouses};
-        res.status(200).json(result);
+        res.status(200).send(JSON.stringify(result));
     }
     catch {
         res.status(400).json({'msg': "Error in finding houses! Try Again!"});

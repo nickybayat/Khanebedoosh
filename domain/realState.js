@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
 const User = require ('./user');
-const RealState = require('../models').RealStates;
+const RealStateModel = require('../models').RealStates;
 
 class RealState extends User {
     constructor(name, url , isAdmin) {

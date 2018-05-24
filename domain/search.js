@@ -1,5 +1,10 @@
 const houseModel = require('../models').house;
-const realstate = require('realState')
+const realstate = require('./realState');
+
+var a = require('debug')('search:a')
+    ,b = require('debug')('search:b')
+    ,c = require('debug')('search:c')
+    ,d = require('debug')('search:d');
 
 class Search {
     constructor(minArea,buildingType,dealType,maxPrice){
@@ -14,19 +19,23 @@ class Search {
     validateSearchQuery(minArea, buildingType, dealType, maxPrice){
         try {
             if (minArea !== "") {
-                if (parseInt(minArea) < 0)
+                if (parseInt(minArea) < 0) {
+                    a("problem in minArea");
                     throw "arguments are wrong!";
+                }
                 else
                     this.minArea = minArea;
             }
             if(buildingType !== ""){
                 this.dealType = dealType;
                 if(not(parseInt(dealType) === 0 || parseInt(dealType) === 1)){
+                    b('problem with dealType');
                     throw "dealType must be either 0 or 1";
                 }
             }
             if(maxPrice !== ""){
                 if(parseInt(maxPrice) < 0){
+                    c('problem with maxPrice');
                     throw "price must be positive";
                 }
                 if(parseInt(dealType) === 1)
@@ -41,6 +50,7 @@ class Search {
             }
         }
         catch(err){
+            d('here in catch');
             console.log("arguments are wrong! " + err.message);
         }
     }
