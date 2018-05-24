@@ -5,14 +5,7 @@ const bodyParser = require('body-parser');
 const asyncMiddleware = require('./utils/asyncMiddleware');
 const users = require('./routes/user');
 const houses = require('./routes/house');
-const individual = require('./domain/manager');
 const port = process.env.port || 8080;
-const debug = require('debug')('http')
-    , http = require('http')
-    , name = 'KhaneBeDoosh';
-
-
-let count = 0;
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -33,11 +26,13 @@ app.use(function (req, res, next) {
 app.use('/public', express.static(__dirname + '/statics'));
 
 app.get('/', function (req, res) {
-    res.send('Welcome to Khanebedoosh');
+    res.send('Welcome to KhaneBeDoosh');
 });
 
 app.post('/balance', users.balanceAPI);
 
+
+app.post('/houses', houses.addHouseAPI);
 
 app.get('/houses/:houseID/phone', houses.phoneAPI);
 
