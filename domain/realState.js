@@ -74,11 +74,12 @@ class RealState extends User {
             for (let i = 0; i < houseArray.length; i++) {
                 let newHouse = houseArray[i];
                 if (await houseData.doesHouseExist(newHouse.id) === false) {
-                    await houseData.addHouse(newHouse);
+                    let h = House.createHouseFromJSONAndTimeStamp(newHouse, expireTime);
+                    await houseData.addHouse(h);
                 }
             }
-        } catch {
-            debug("problem in addHousesFromRealStateToDB");
+        } catch (e) {
+            console.log("problem in addHousesFromRealStateToDB " + e.message);
         }
     }
 
@@ -90,15 +91,3 @@ class RealState extends User {
 }
 
 module.exports = RealState;
-
-// realstate = new RealState("reallllstateeee","http://139.59.151.5:6664/khaneBeDoosh/v2/house",false);
-//
-// let result = realstate.addHousesFromRealStateToDB();
-
-// let newHouse = new House(279,95352,8084,0,1,1525617338100,"2d5e0cd4-d6c2-4ac3-9919-faca42046bb2","villa","احتشامیه","https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/German_House.jpg/320px-German_House.jpg",null,null);
-// try {
-//     houseData.addHouse(newHouse);
-// }
-// catch (e) {
-//     debug('msg: Illegal Argument in request: ' + e.message);
-// }

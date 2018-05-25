@@ -65,7 +65,8 @@ exports.getInfo = asyncMiddleware(async (req, res, next) => {
             id: house.id, buildingType: house.buildingType, address: house.address,
             imageURL: house.imageURL, phone: house.phone, expireTime: house.expireTime, area: house.area,
             basePrice: house.basePrice, rentPrice: house.rentPrice, sellPrice: house.sellPrice,
-            dealType: house.dealType
+            dealType: house.dealType, persianBuildingType: house.getPersianBuildingType(),
+            persianDealType: house.getDealTypeString(), description: house.description
         };
         res.status(200).json({'house': resHouse});
     } catch (e) {

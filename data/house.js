@@ -4,6 +4,7 @@ const debug = require('debug')('dataHouse')
     , name = 'KhaneBeDoosh';
 
 exports.addHouse = (house) => {
+    debug(house);
     HouseModel.create({
         area: house.area, basePrice: house.basePrice, rentPrice: house.rentPrice,
         sellPrice: house.sellPrice, dealType: house.dealType, expireTime: house.expireTime,

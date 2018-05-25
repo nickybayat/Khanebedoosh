@@ -7,7 +7,7 @@ const debug = require('debug')('http')
     , name = 'KhaneBeDoosh';
 
 class Search {
-    constructor(minArea,buildingType,dealType,maxPrice){
+    constructor(minArea, buildingType, dealType, maxPrice) {
         this._minArea = null;
         this._buildingType = null;
         this._dealType = null;
@@ -16,7 +16,7 @@ class Search {
         this.validateSearchQuery(minArea, buildingType, dealType, maxPrice);
     }
 
-    validateSearchQuery(minArea, buildingType, dealType, maxPrice){
+    validateSearchQuery(minArea, buildingType, dealType, maxPrice) {
         try {
             if (minArea !== "") {
                 if (parseInt(minArea) < 0) {
@@ -26,79 +26,91 @@ class Search {
                 else
                     this.minArea = minArea;
             }
-            if(buildingType !== ""){
+            if (buildingType !== "") {
                 this.dealType = dealType;
-                if(not(parseInt(dealType) === 0 || parseInt(dealType) === 1)){
+                if (not(parseInt(dealType) === 0 || parseInt(dealType) === 1)) {
                     debug('problem with dealType');
                     throw "dealType must be either 0 or 1";
                 }
             }
-            if(maxPrice !== ""){
-                if(parseInt(maxPrice) < 0){
+            if (maxPrice !== "") {
+                if (parseInt(maxPrice) < 0) {
                     debug('problem with maxPrice');
                     throw "price must be positive";
                 }
-                if(parseInt(dealType) === 1)
+                if (parseInt(dealType) === 1)
                     this.maxRentPrice = maxPrice;
-                else if(parseInt(dealType) === 0){
+                else if (parseInt(dealType) === 0) {
                     this.maxSellPrice = maxPrice;
                 }
-                else{
+                else {
                     this.maxSellPrice = maxPrice;
                     this.maxRentPrice = maxPrice;
                 }
             }
         }
-        catch(err){
+        catch (err) {
             debug('here in catch');
             console.log("arguments are wrong! " + err.message);
         }
     }
 
-    async getRequestedHousesFromAllUsers(query){
-        let requestedHouses ; // should be a json array
+    async getRequestedHousesFromAllUsers(query) {
+        let requestedHouses; // should be a json array
         await this.syncDatabase();
         debug('database is synced');
         requestedHouses = await this.getHouseByQuery(query); // bring from DB
         return requestedHouses;
     }
 
-    async syncDatabase(){
+    async syncDatabase() {
         try {
             await h.removeExpiredHousesIfExist();
             await r.addHousesFromRealStateToDB();
         }
-        catch(error) {
+        catch (error) {
             debug(error.message);
         }
     }
 
-    async getHouseByQuery(query){
+    async getHouseByQuery(query) {
         let sql1 = "SELECT * FROM houses WHERE (id IS NOT NULL)" +
-            (query.minArea === null ? "" : " AND (area >= " + query.minArea + ")" ) +
-            (query.dealType === null ? "" : " AND (dealType = " + query.dealType + ")" ) +
-            (query.buildingType === null ? "" : " AND (buildingType LIKE '" + query.buildingType + "')" ) +
+            (query.minArea === null ? "" : " AND (area >= " + query.minArea + ")") +
+            (query.dealType === null ? "" : " AND (dealType = " + query.dealType + ")") +
+            (query.buildingType === null ? "" : " AND (buildingType LIKE '" + query.buildingType + "')") +
             (query.dealType === null
-                ? ((query.maxRentPrice !== null ) ? " AND ((rentPrice <= " + query.maxRentPrice + ") OR rentPrice = NULL)" :
-                    (query.maxSellPrice !== null ) ? " AND ((sellPrice <= " + query.maxSellPrice + ") OR sellPrice = NULL)" : "")
+                ? ((query.maxRentPrice !== null) ? " AND ((rentPrice <= " + query.maxRentPrice + ") OR rentPrice = NULL)" :
+                    (query.maxSellPrice !== null) ? " AND ((sellPrice <= " + query.maxSellPrice + ") OR sellPrice = NULL)" : "")
                 : (parseInt(query.dealType) === 1
-                    ? (query.maxRentPrice !== null ? " AND (rentPrice <= " + query.maxRentPrice + ")" : "" )
-                    : (query.maxSellPrice !== null ? " AND (sellPrice <= " + query.maxSellPrice + ")" : "" ))) + ";" ;
+                    ? (query.maxRentPrice !== null ? " AND (rentPrice <= " + query.maxRentPrice + ")" : "")
+                    : (query.maxSellPrice !== null ? " AND (sellPrice <= " + query.maxSellPrice + ")" : ""))) + ";";
 
-        const s = new Sequelize('sqlite:/Users/nicky/Khanebedoosh-express/db.khanebedoosh.sqlite');
+        // const s = new Sequelize('sqlite:/Users/nicky/Khanebedoosh-express/db.khanebedoosh.sqlite');
+        const path = require('path');
+        const dbPath = path.resolve(__dirname, '../db.khanebedoosh.sqlite');
+        console.log(dbPath.toString());
+        // const s = new Sequelize('sqlite:' + dbPath , {
+        //     "operatorsAliases": false
+        // });
+
+        const s = new Sequelize('db.khanebedoosh.sqlite', null, null, {
+            dialect: 'sqlite',
+            storage: dbPath,
+            operatorsAliases: false
+        });
 
         let result = await s.query(sql1)
             .then(houses => {
                 return houses;
             })
-            .catch(function(error) {
+            .catch(function (error) {
                 console.log('request failed in getting searched houses', error.message);
             })
         return result;
 
     }
 
-    async findRealStateHouseIDs(query,realstate){
+    async findRealStateHouseIDs(query, realstate) {
         let searchResults;
         let houseJSON = realstate.getAllHouses().data;
         for (let i = 0; i < houseJSON.length; i++) {
@@ -110,7 +122,7 @@ class Search {
         return searchResults;
     }
 
-    evaluateHouse(house){
+    evaluateHouse(house) {
         let isAreaOK = isAreaOK(house);
         let isDealTypeOK = isDealTypeOK(house);
         let isBuildingTypeOK = isBuildingTypeOK(house);
@@ -118,7 +130,7 @@ class Search {
         return (isAreaOK && isBuildingTypeOK && isDealTypeOK && isPriceOK);
     }
 
-    isPriceOK(house,isDealTypeOK){
+    isPriceOK(house, isDealTypeOK) {
         if (this.dealType !== null && isDealTypeOK) {
             if (parseInt(this.dealType) === 1)
                 if ((this.maxRentPrice !== null && parseInt(house.rentPrice) <= parseInt(this.maxRentPrice))
@@ -131,65 +143,73 @@ class Search {
         }
         if (this.dealType === null) {
             if ((this.maxRentPrice !== null && parseInt(house.dealType) === 1 &&
-                    parseInt(house.rentPrice) <= parseInt(this.maxRentPrice)) ||
+                parseInt(house.rentPrice) <= parseInt(this.maxRentPrice)) ||
                 this.maxRentPrice === null)
                 return true;
             if ((this.maxSellPrice !== null && parseInt(house.dealType) === 0 &&
-                    parseInt(house.sellPrice) <= parseInt(this.maxSellPrice)) ||
+                parseInt(house.sellPrice) <= parseInt(this.maxSellPrice)) ||
                 this.maxSellPrice === null)
                 return true;
         }
         return false;
     }
 
-    isBuildingTypeOK(house){
+    isBuildingTypeOK(house) {
         return (this.buildingType === null ||
             (this.buildingType === house.buildingType));
     }
 
-    isDealTypeOK(house){
+    isDealTypeOK(house) {
         return ((this.dealType !== null && house.dealType === this.dealType) ||
             this.dealType === null);
     }
 
-    isAreaOK(house){
+    isAreaOK(house) {
         return ((this.minArea !== null && (parseInt(house.area) >= this.minArea)) || this.minArea === null);
     }
 
-    get minArea(){
+    get minArea() {
         return this._minArea;
     }
-    get buildingType(){
+
+    get buildingType() {
         return this._buildingType;
     }
-    get dealType(){
+
+    get dealType() {
         return this._dealType;
     }
-    get maxRentPrice(){
+
+    get maxRentPrice() {
         return this._maxRentPrice;
     }
-    get maxSellPrice(){
+
+    get maxSellPrice() {
         return this._maxSellPrice;
     }
 
-    set minArea(minArea){
+    set minArea(minArea) {
         this._minArea = minArea;
     }
-    set buildingType(buildingType){
+
+    set buildingType(buildingType) {
         this._buildingType = buildingType;
     }
-    set dealType(dealType){
+
+    set dealType(dealType) {
         this._dealType = dealType;
     }
-    set maxRentPrice(maxRentPrice){
+
+    set maxRentPrice(maxRentPrice) {
         this._maxRentPrice = maxRentPrice;
     }
-    set maxSellPrice(maxSellPrice){
+
+    set maxSellPrice(maxSellPrice) {
         this._maxSellPrice = maxSellPrice;
     }
 }
 
 
-let h = new house("043b8b68-983b-4fc1-9ef3-342ee5169a92",279,95352,8084,0,1,1525617,"villa","احتشامیه","https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/German_House.jpg/320px-German_House.jpg",null,null);
-let r = new realstate("reallllstateeee","http://139.59.151.5:6664/khaneBeDoosh/v2/house",false);
+let h = new house("043b8b68-983b-4fc1-9ef3-342ee5169a92", 279, 95352, 8084, 0, 1, 1525617, "villa", "احتشامیه", "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/German_House.jpg/320px-German_House.jpg", null, null);
+let r = new realstate("reallllstateeee", "http://139.59.151.5:6664/khaneBeDoosh/v2/house", false);
 module.exports = Search;

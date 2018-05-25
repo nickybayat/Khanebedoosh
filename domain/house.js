@@ -43,7 +43,7 @@ class House {
             rentPrice,sellPrice,house.dealType);
     }
 
-    createHouseFromJSONAndTimeStamp(house,expireTime){
+    static createHouseFromJSONAndTimeStamp(house,expireTime){
         let rentPrice = 0;
         let sellPrice = 0;
         let basePrice = 0;
@@ -83,7 +83,14 @@ class House {
         let d = new Date();
         let sql = "DELETE FROM houses WHERE expireTime BETWEEN 1 AND "+ ((d.getTime() / 1000) - 1);
 
-        const s = new Sequelize('sqlite:/Users/nicky/Khanebedoosh-express/db.khanebedoosh.sqlite');
+        // const s = new Sequelize('sqlite:/Users/nicky/Khanebedoosh-express/db.khanebedoosh.sqlite');
+        const path = require('path');
+        const dbPath = path.resolve(__dirname, '../db.khanebedoosh.sqlite');
+        const s = new Sequelize('db.khanebedoosh.sqlite', null, null, {
+            dialect: 'sqlite',
+            storage: dbPath,
+            operatorsAliases: false
+        });
         let result = await s.query(sql)
             .catch(function(error) {
                 console.log('request failed in deleting expired houses', error.message);
